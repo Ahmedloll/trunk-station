@@ -57,53 +57,97 @@
                 ref="formValidator"
               >
                 <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
-                  <base-input
-                    alternative
-                    class="mb-3"
-                    prepend-icon="ni ni-hat-3"
-                    placeholder="Name"
-                    name="Name"
-                    :rules="{ required: true }"
-                    v-model="model.name"
-                  >
-                  </base-input>
+                  <b-row>
+                    <b-col md="12">
 
-                  <base-input
-                    alternative
-                    class="mb-3"
-                    prepend-icon="ni ni-email-83"
-                    placeholder="Email"
-                    name="Email"
-                    :rules="{ required: true, email: true }"
-                    v-model="model.email"
-                  >
-                  </base-input>
+                      <b-form-group>
+                        <b-form-radio
+                          class="custom-control-inline"
+                          name="some-radios"
+                          value="A"
+                          >Sender/Reciver</b-form-radio
+                        >
+                        <b-form-radio
+                          class="custom-control-inline"
+                          name="some-radios"
+                          value="B"
+                          >Transporter</b-form-radio
+                        >
+                      </b-form-group>
+                    </b-col>
+                    <b-col md="12">
+                      <base-input
+                        alternative
+                        class="mb-3"
+                        prepend-icon="ni ni-hat-3"
+                        placeholder="Name"
+                        name="Name"
+                        :rules="{ required: true }"
+                        v-model="model.name"
+                      >
+                      </base-input>
+                    </b-col>
+                    <b-col md="12">
+                      <base-input
+                        alternative
+                        class="mb-3"
+                        prepend-icon="ni ni-email-83"
+                        placeholder="Email"
+                        name="Email"
+                        :rules="{ required: true, email: true }"
+                        v-model="model.email"
+                      >
+                      </base-input>
+                    </b-col>
+                    <b-col md="12">
+                      <base-input
+                        alternative
+                        class="mb-3"
+                        prepend-icon="ni ni-lock-circle-open"
+                        placeholder="password"
+                        type="password"
+                        name="Password"
+                        :rules="{ required: true, min: 6 }"
+                        v-model="model.password"
+                      >
+                      </base-input>
+                    </b-col>
+                    <b-col md="3">
+                      <base-input
+                        alternative
+                        class="mb-3"
+                        prepend-icon="ni ni-lock-circle-open"
+                        placeholder="Key"
+                      >
+                      </base-input>
+                    </b-col>
+                    <b-col md="9">
+                      <base-input
+                        alternative
+                        class="mb-3"
+                        prepend-icon="ni ni-mobile-button"
+                        placeholder="Phone"
+                      >
+                      </base-input>
+                    </b-col>
+                    <b-col md="12">
+                      <base-input
+                        alternative
+                        class="mb-3"
+                        prepend-icon="ni ni-lock-circle-open"
+                        placeholder="Confirm password"
+                        type="password"
+                        name="passwordConfirmation"
+                        :rules="{
+                          confirmed: model.password !== model.confirm_Password,
+                          required: true
+                        }"
+                        v-model="model.confirm_Password"
+                      >
+                      </base-input>
+                    </b-col>
+                  </b-row>
 
-                  <base-input
-                    alternative
-                    class="mb-3"
-                    prepend-icon="ni ni-lock-circle-open"
-                    placeholder="password"
-                    type="password"
-                    name="Password"
-                    :rules="{ required: true, min: 6 }"
-                    v-model="model.password"
-                  >
-                  </base-input>
-                  <base-input
-                    alternative
-                    class="mb-3"
-                    prepend-icon="ni ni-lock-circle-open"
-                    placeholder="Confirm password"
-                    type="password"
-                    name="passwordConfirmation"
-                    :rules="{
-                      confirmed: model.password !== model.confirm_Password,
-                      required: true
-                    }"
-                    v-model="model.confirm_Password"
-                  >
-                  </base-input>
                   <!-- <div class="text-muted font-italic"><small>password strength: <span
                     class="text-success font-weight-700">strong</span></small></div> -->
                   <!-- <b-row class=" my-4">
