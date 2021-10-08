@@ -85,6 +85,7 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
   export default {
     data() {
       return {
@@ -97,6 +98,15 @@
     },
     methods: {
       onSubmit() {
+      axios({
+      method: 'post',
+      url: `https://truckmanagment.herokuapp.com/api/auth/signin`,
+      data: { ...this.model },
+    }).then((result) => {
+      console.log(result);
+      localStorage.setItem('truck-user-token',result.data.token)
+      this.$router.push({ path: 'dashboard' })
+    }).catch(err=>{});
         // this will be called only after form is valid. You can do api call here to login
       }
     }

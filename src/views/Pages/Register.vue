@@ -195,11 +195,14 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
+
 export default {
   name: "register",
   data() {
     return {
       model: {
+        type:'transportar',
         name: "",
         email: "",
         password: "",
@@ -213,6 +216,26 @@ export default {
     onSubmit() {
       // this will be called only after form is valid. You can do an api call here to register users
       console.log("submited");
+
+     let data={
+       name:this.model.name,
+       email:this.model.email,
+       password:this.model.password,
+       phone:this.model.key + this.model.phone,
+       type:this.model.type
+  
+    }
+
+       axios({
+      method: 'post',
+      url: `https://truckmanagment.herokuapp.com/api/auth/signup`,
+      data: data,
+    }).then((result) => {
+      console.log(result);
+      this.$router.push({ path: 'login' })
+    }).catch(err=>{});
+        // this will be called only after form is valid. You can do api call here to login
+      
     }
   }
 };
