@@ -15,7 +15,7 @@
       </li>
     </b-navbar-nav>
     <b-navbar-nav class="align-items-center ml-auto ml-md-0">
-        <b-form class="navbar-search form-inline mr-sm-3"
+        <!-- <b-form class="navbar-search form-inline mr-sm-3"
             :class="{'navbar-search-dark': type === 'default', 'navbar-search-light': type === 'light'}"
             id="navbar-search-main">
         <b-form-group class="mb-0">
@@ -27,7 +27,7 @@
             </div>
           </b-input-group>
         </b-form-group>
-      </b-form>
+      </b-form> -->
       <base-dropdown menu-on-right
                      class="nav-item"
                      tag="li"
@@ -53,7 +53,7 @@
             <i class="ni ni-single-02"></i>
             <span>My profile</span>
           </b-dropdown-item>
-          <b-dropdown-item href="#!">
+          <!-- <b-dropdown-item href="#!">
             <i class="ni ni-settings-gear-65"></i>
             <span>Settings</span>
           </b-dropdown-item>
@@ -64,7 +64,7 @@
           <b-dropdown-item href="#!">
             <i class="ni ni-support-16"></i>
             <span>Support</span>
-          </b-dropdown-item>
+          </b-dropdown-item> -->
           <div class="dropdown-divider"></div>
           <b-dropdown-item href="#!">
             <i class="ni ni-user-run"></i>

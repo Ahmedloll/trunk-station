@@ -52,6 +52,7 @@
               <!-- <div class="text-center text-muted mb-4">
                 <small>Or sign up with credentials</small>
               </div> -->
+              <h1>Register Now!</h1>
               <validation-observer
                 v-slot="{ handleSubmit }"
                 ref="formValidator"
@@ -59,19 +60,24 @@
                 <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
                   <b-row>
                     <b-col md="12">
-
                       <b-form-group>
                         <b-form-radio
                           class="custom-control-inline"
                           name="some-radios"
-                          value="A"
-                          >Sender/Reciver</b-form-radio
+                          value="a"
+                          v-model="model.type"
+                        >
+                          <img src="../../assets/avatar.png" alt="user icon" />
+                          Sender/Reciver</b-form-radio
                         >
                         <b-form-radio
                           class="custom-control-inline"
                           name="some-radios"
-                          value="B"
-                          >Transporter</b-form-radio
+                          value="b"
+                          v-model="model.type"
+                        >
+                          <img src="../../assets/truck.png" alt="user icon" />
+                          Transporter</b-form-radio
                         >
                       </b-form-group>
                     </b-col>
@@ -112,12 +118,36 @@
                       >
                       </base-input>
                     </b-col>
-                    <b-col md="3">
+
+                    <b-col md="12">
                       <base-input
                         alternative
                         class="mb-3"
                         prepend-icon="ni ni-lock-circle-open"
+                        placeholder="Confirm password"
+                        type="password"
+                        name="password Confirmation"
+                        :rules="{
+                          confirmed: model.password !== model.confirm_Password,
+                          required: true
+                        }"
+                        v-model="model.confirm_Password"
+                      >
+                      </base-input>
+                    </b-col>
+                    <b-col md="3">
+                      <base-input
+                        alternative
+                        class="mb-3"
+                        prepend-icon="ni ni-mobile-button"
                         placeholder="Key"
+                        type="number"
+                        name="key"
+                        :rules="{
+                          required: true,
+                          numeric: true
+                        }"
+                        v-model="model.key"
                       >
                       </base-input>
                     </b-col>
@@ -127,22 +157,13 @@
                         class="mb-3"
                         prepend-icon="ni ni-mobile-button"
                         placeholder="Phone"
-                      >
-                      </base-input>
-                    </b-col>
-                    <b-col md="12">
-                      <base-input
-                        alternative
-                        class="mb-3"
-                        prepend-icon="ni ni-lock-circle-open"
-                        placeholder="Confirm password"
-                        type="password"
-                        name="passwordConfirmation"
+                        type="tel"
+                        name="phone"
                         :rules="{
-                          confirmed: model.password !== model.confirm_Password,
-                          required: true
+                          required: true,
+                          numeric: true
                         }"
-                        v-model="model.confirm_Password"
+                        v-model="model.phone"
                       >
                       </base-input>
                     </b-col>
@@ -182,8 +203,9 @@ export default {
         name: "",
         email: "",
         password: "",
-        confirm_Password: ""
-        // agree: false
+        confirm_Password: "",
+        key: "",
+        phone: ""
       }
     };
   },
@@ -195,4 +217,8 @@ export default {
   }
 };
 </script>
-<style></style>
+<style scoped>
+.custom-control-inline img {
+  width: 30px;
+}
+</style>
