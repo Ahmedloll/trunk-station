@@ -70,7 +70,7 @@
             <i class="ni ni-settings-gear-65"></i> Settings
           </a>
           <sidebar-item
-          class="side-item"
+            class="side-item"
             :link="{
               name: 'Reset Password',
               path: '/resetPassword',
@@ -115,7 +115,7 @@
           }"
         >
         </sidebar-item>
-
+-->
         <sidebar-item
           :link="{
             name: 'Maps',
@@ -123,7 +123,7 @@
             icon: 'ni ni-pin-3 text-orange'
           }"
         >
-        </sidebar-item> -->
+        </sidebar-item>
       </template>
 
       <!-- <template slot="links-after">
@@ -210,7 +210,4 @@ export default {
   }
 };
 </script>
-<style lang="scss" >
-
-
-</style>
+<style lang="scss"></style>

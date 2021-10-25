@@ -114,7 +114,7 @@ export default {
     //****************************** getting trucks ******************************
 
     axios
-      .get(`http://159.223.27.152/api/truck/`, {
+      .get(`https://truckstation.info/api/truck/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
         }

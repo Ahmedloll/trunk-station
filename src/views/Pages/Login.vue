@@ -151,7 +151,7 @@ export default {
       this.loader = true;
       axios({
         method: "post",
-        url: `http://159.223.27.152/api/auth/signin`,
+        url: `https://truckstation.info/api/auth/signin`,
         data: { ...this.model }
       })
         .then(result => {
@@ -161,7 +161,7 @@ export default {
           this.$router.push({ path: "dashboard" });
           axios
             .get(
-              `http://159.223.27.152/api/static/cities`,
+              `https://truckstation.info/api/static/cities`,
 
               {
                 headers: {
@@ -181,7 +181,7 @@ export default {
             });
           axios
             .get(
-              `http://159.223.27.152/api/static/cars`,
+              `https://truckstation.info/api/static/cars`,
 
               {
                 headers: {

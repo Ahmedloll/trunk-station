@@ -11,7 +11,7 @@ export default {
     if (localStorage.getItem("truck-user-token")) {
       axios
         .get(
-          `http://159.223.27.152/api/static/cities`,
+          `https://truckstation.info/api/static/cities`,
 
           {
             headers: {
@@ -31,7 +31,7 @@ export default {
         });
       axios
         .get(
-          `http://159.223.27.152/api/static/cars`,
+          `https://truckstation.info/api/static/cars`,
 
           {
             headers: {

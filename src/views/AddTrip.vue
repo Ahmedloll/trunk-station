@@ -224,7 +224,7 @@ export default {
   methods: {
     onSubmit() {
       axios
-        .post(`http://159.223.27.152/api/fixedTrip/`, this.trip, {
+        .post(`https://truckstation.info/api/fixedTrip/`, this.trip, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
           }

@@ -55,7 +55,7 @@ export default {
     //****************************** getting trips ******************************
 
     axios
-      .get(`http://159.223.27.152/api/fixedTrip/`, {
+      .get(`https://truckstation.info/api/fixedTrip/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
         }

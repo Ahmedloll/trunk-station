@@ -186,6 +186,9 @@
                       </base-input>
                     </b-col>
                     <b-col cols="12">
+                      
+                    </b-col>
+                    <b-col cols="12">
                       <base-input
                         prepend-icon=""
                         label="Drop off location"
@@ -277,7 +280,7 @@ export default {
 
     // onSubmit() {
     //   axios
-    //     .post(`http://159.223.27.152/api/truck/`, this.truck, {
+    //     .post(`https://truckstation.info/api/truck/`, this.truck, {
     //       headers: {
     //         Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
     //       }

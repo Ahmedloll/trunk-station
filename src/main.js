@@ -21,7 +21,15 @@ import store from "./store";
 import VueFormWizard from "vue-form-wizard";
 import "vue-form-wizard/dist/vue-form-wizard.min.css";
 import i18n from "./i18n";
+import * as GmapVue from "gmap-vue";
 
+Vue.use(GmapVue, {
+  load: {
+    key: "AIzaSyBKHwO4kHCnokqGtz8gsFRqUFOYC0cKOnA",
+    libraries: "places"
+  },
+  installComponents: true
+});
 
 Vue.use(VueFormWizard);
 

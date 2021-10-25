@@ -286,7 +286,7 @@ export default {
 
       axios({
         method: "post",
-        url: `http://159.223.27.152/api/auth/signup`,
+        url: `https://truckstation.info/api/auth/signup`,
         data: data
       })
         .then(result => {

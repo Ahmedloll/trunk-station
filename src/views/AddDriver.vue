@@ -203,7 +203,7 @@ export default {
       data.phone = this.key + this.phone;
       axios
         .post(
-          `http://159.223.27.152/api/driver/`,
+          `https://truckstation.info/api/driver/`,
           data,
 
           {

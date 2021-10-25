@@ -114,7 +114,7 @@ export default {
       this.loader = true;
       axios
         .delete(
-          `http://159.223.27.152/api/driver/${driver.id}/`,
+          `https://truckstation.info/api/driver/${driver.id}/`,
 
           {
             headers: {

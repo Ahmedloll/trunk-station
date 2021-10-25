@@ -226,7 +226,7 @@ export default {
         price: this.trip.price
       };
       axios
-        .put(`http://159.223.27.152/api/fixedTrip/`, data, {
+        .put(`https://truckstation.info/api/fixedTrip/`, data, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
           }
@@ -244,7 +244,7 @@ export default {
     //****************************** getting drivers ******************************
 
     axios
-      .get(`http://159.223.27.152/api/fixedTrip/${this.$route.params.id}`, {
+      .get(`https://truckstation.info/api/fixedTrip/${this.$route.params.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
         }
