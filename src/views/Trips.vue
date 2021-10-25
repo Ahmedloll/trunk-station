@@ -61,7 +61,7 @@
     <b-container fluid class="mt--7">
       <b-row>
         <b-col>
-          <trucks-table @deleteTruck="deleteTruck" :trucks="trucks" />
+          <trips-table @deleteTrip="deleteTrip" :trips="trips" />
         </b-col>
       </b-row>
       <div class="mt-5"></div>
@@ -79,16 +79,15 @@ import {
   TableColumn
 } from "element-ui";
 import users from "./Tables/users";
-import TrucksTable from "./Tables/RegularTables/TrucksTable";
+import TripsTable from "./Tables/RegularTables/TripsTable";
 import DarkTable from "./Tables/RegularTables/DarkTable";
 import axios from "axios";
 import loader from "../components/Loader.vue";
 
 export default {
   components: {
-    TrucksTable,
+    TripsTable,
     DarkTable,
-    TrucksTable,
     loader,
     [Dropdown.name]: Dropdown,
     [DropdownItem.name]: DropdownItem,
@@ -98,29 +97,29 @@ export default {
   },
   data() {
     return {
-      trucks: [],
+      trips: [],
       users,
       loader: true
     };
   },
   methods: {
-    deleteTruck(truck) {
-      this.trucks = this.trucks.filter(function(el) {
-        return el.id != truck.id;
+    deleteTrip(trip) {
+      this.trips = this.trips.filter(function(el) {
+        return el.id != trip.id;
       });
     }
   },
   mounted() {
-    //****************************** getting trucks ******************************
+    //****************************** getting trips ******************************
 
     axios
-      .get(`http://159.223.27.152/api/truck/`, {
+      .get(`http://159.223.27.152/api/fixedTrip/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
         }
       })
       .then(response => {
-        this.trucks = response.data.data;
+        this.trips = response.data.trips;
         this.loader = false;
       });
   }

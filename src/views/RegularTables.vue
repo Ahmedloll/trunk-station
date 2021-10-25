@@ -73,12 +73,10 @@
   import { Dropdown, DropdownItem, DropdownMenu, Table, TableColumn } from 'element-ui';
   import projects from './Tables/projects'
   import users from './Tables/users'
-  import LightTable from "./Tables/RegularTables/LightTable";
   import DarkTable from "./Tables/RegularTables/DarkTable";
 
   export default {
     components: {
-      LightTable,
       DarkTable,
       [Dropdown.name]: Dropdown,
       [DropdownItem.name]: DropdownItem,

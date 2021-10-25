@@ -40,7 +40,7 @@
         <h5 class="h3">
           Jessica Jones
           <!-- <span class="font-weight-light">, 27</span> -->
-        </h5> -->
+        </h5>
 
       </div>
     </b-card-body>

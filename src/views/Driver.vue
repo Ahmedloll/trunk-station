@@ -13,7 +13,7 @@
           <card>
             <b-row align-v="center" slot="header">
               <b-col cols="8">
-                <h3 class="mb-0">Add Driver</h3>
+                <h3 class="mb-0">Update Driver</h3>
               </b-col>
               <!-- <b-col cols="4" class="text-right">
                 <a href="#!" class="btn btn-sm btn-primary">Settings</a>
@@ -31,12 +31,9 @@
                       class="mb-3"
                       type="text"
                       label="Driver Name"
-                      id="Driver Name"
                       prepend-icon=" "
                       placeholder="Driver Name"
                       v-model="driver.name"
-                      :rules="{ required: true }"
-                      required
                     >
                     </base-input>
                   </b-col>
@@ -53,7 +50,6 @@
                         required: true,
                         numeric: true
                       }"
-                      required
                       v-model="key"
                     >
                     </base-input>
@@ -67,7 +63,6 @@
                       type="tel"
                       name="phone"
                       label="Phone"
-                      required
                       :rules="{
                         required: true,
                         numeric: true
@@ -83,11 +78,8 @@
                       prepend-icon="ni ni-mobile-button"
                       type="email"
                       label="Email address"
-                      required
-                      id="Email address"
                       placeholder="Email address"
                       v-model="driver.email"
-                      :rules="{ required: true, email: true }"
                     >
                     </base-input>
                   </b-col>
@@ -97,12 +89,9 @@
                       class="mb-3"
                       type="text"
                       label="License No"
-                      required
-                      id="License No"
                       prepend-icon=" "
                       placeholder="License No"
                       v-model="driver.licenseNo"
-                      :rules="{ required: true }"
                     >
                     </base-input>
                   </b-col>
@@ -119,7 +108,6 @@
                         :config="{ allowInput: true }"
                         class="form-control datepicker"
                         v-model="driver.licenseEndDate"
-                        required
                       >
                       </flat-picker>
                     </base-input>
@@ -131,12 +119,9 @@
                       class="mb-3"
                       type="text"
                       label="Identity No"
-                      id="Identity No"
                       prepend-icon=" "
                       placeholder="Identity No"
-                      required
                       v-model="driver.identityNo"
-                      :rules="{ required: true }"
                     >
                     </base-input>
                   </b-col>
@@ -151,7 +136,6 @@
                         @on-open="focus"
                         @on-close="blur"
                         :config="{ allowInput: true }"
-                        required
                         class="form-control datepicker"
                         v-model="driver.identityEndDate"
                       >
@@ -162,7 +146,7 @@
               </div>
               <div class="text-center">
                 <base-button type="primary" native-type="submit" class="my-4"
-                  >Add driver</base-button
+                  >Update driver</base-button
                 >
               </div>
             </b-form>
@@ -170,6 +154,7 @@
         </b-col>
       </b-row>
     </b-container>
+    <loader v-if="loader" />
   </div>
 </template>
 
@@ -177,13 +162,14 @@
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import axios from "axios";
+import loader from "../components/Loader.vue";
 
 export default {
-  components: {
-    flatPicker
-  },
+  components: { loader, flatPicker },
   data() {
     return {
+      loader: true,
+
       key: "966",
       phone: "",
       driver: {
@@ -199,10 +185,18 @@ export default {
   },
   methods: {
     onSubmit() {
-      let data = { ...this.driver };
+      let data = {
+        id: this.driver.id.toString(10),
+        email: this.driver.email,
+        name: this.driver.name,
+        licenseNo: this.driver.licenseNo,
+        licenseEndDate: this.driver.licenseEndDate,
+        identityNo: this.driver.identityNo,
+        identityEndDate: this.driver.identityEndDate
+      };
       data.phone = this.key + this.phone;
       axios
-        .post(
+        .put(
           `http://159.223.27.152/api/driver/`,
           data,
 
@@ -216,14 +210,26 @@ export default {
         )
         .then(response => {
           console.log(response);
-          this.$router.push({ path: "drivers" });
+          this.$router.push({ path: "/drivers" });
         })
         .catch(err => {
           console.log(err);
-          // this.modals.error = err.response.data.message;
-          // this.modals.modal0 = true;
         });
     }
+  },
+  mounted() {
+    //****************************** getting drivers ******************************
+
+    axios
+      .get(`http://159.223.27.152/api/driver/${this.$route.params.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
+        }
+      })
+      .then(response => {
+        this.driver = response.data.data;
+        this.loader = false;
+      });
   }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="header bg-gradient-success py-7 py-lg-8 pt-lg-9">
+    <div class="header bg-gradient-success py-9 py-lg-8 pt-lg-9">
       <!-- <b-container>
         <div class="header-body text-center mb-7">
           <b-row class="justify-content-center">
@@ -13,12 +13,21 @@
           </b-row>
         </div>
       </b-container> -->
-      <div class="separator separator-bottom separator-skew zindex-100">
-        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
-             xmlns="http://www.w3.org/2000/svg">
-          <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+      <!-- <div class="separator separator-bottom separator-skew zindex-100">
+        <svg
+          x="0"
+          y="0"
+          viewBox="0 0 2560 100"
+          preserveAspectRatio="none"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <polygon
+            class="fill-default"
+            points="2560 0 2560 100 0 100"
+          ></polygon>
         </svg>
-      </div>
+      </div> -->
     </div>
     <!-- Page content -->
     <b-container class="mt--8 pb-5">
@@ -42,30 +51,42 @@
               <!-- <div class="text-center text-muted mb-4">
                 <small>Or sign in with credentials</small>
               </div> -->
-              <validation-observer v-slot="{handleSubmit}" ref="formValidator">
+              <validation-observer
+                v-slot="{ handleSubmit }"
+                ref="formValidator"
+              >
                 <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
-                  <base-input alternative
-                              class="mb-3"
-                              name="Email"
-                              :rules="{required: true, email: true}"
-                              prepend-icon="ni ni-email-83"
-                              placeholder="Email"
-                              v-model="model.email">
+                  <base-input
+                    alternative
+                    class="mb-3"
+                    name="Email"
+                    :rules="{ required: true, email: true }"
+                    prepend-icon="ni ni-email-83"
+                    placeholder="Email"
+                    v-model="model.email"
+                  >
                   </base-input>
 
-                  <base-input alternative
-                              class="mb-3"
-                              name="Password"
-                              :rules="{required: true, min: 6}"
-                              prepend-icon="ni ni-lock-circle-open"
-                              type="password"
-                              placeholder="Password"
-                              v-model="model.password">
+                  <base-input
+                    alternative
+                    class="mb-3"
+                    name="Password"
+                    :rules="{ required: true, min: 6 }"
+                    prepend-icon="ni ni-lock-circle-open"
+                    type="password"
+                    placeholder="Password"
+                    v-model="model.password"
+                  >
                   </base-input>
 
                   <!-- <b-form-checkbox v-model="model.rememberMe">Remember me</b-form-checkbox> -->
                   <div class="text-center">
-                    <base-button type="primary" native-type="submit" class="my-4">Sign in</base-button>
+                    <base-button
+                      type="primary"
+                      native-type="submit"
+                      class="my-4"
+                      >Sign in</base-button
+                    >
                   </div>
                 </b-form>
               </validation-observer>
@@ -73,42 +94,120 @@
           </b-card>
           <b-row class="mt-3">
             <b-col cols="6">
-              <router-link to="/dashboard" class="text-light"><small>Forgot password?</small></router-link>
+              <!-- <router-link to="/dashboard" class="text-light"
+                ><small>Forgot password?</small></router-link
+              > -->
             </b-col>
             <b-col cols="6" class="text-right">
-              <router-link to="/register" class="text-light"><small>Create new account</small></router-link>
+              <router-link to="/register" class="text-light"
+                ><small>Create new account</small></router-link
+              >
             </b-col>
           </b-row>
         </b-col>
       </b-row>
     </b-container>
+    <modal :show.sync="modals.modal0">
+      <template slot="header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+      </template>
+      <div>
+        {{ modals.error }}
+      </div>
+      <template slot="footer">
+        <base-button type="secondary" @click="modals.modal0 = false"
+          >Close</base-button
+        >
+      </template>
+    </modal>
+    <loader v-if="loader" />
   </div>
 </template>
 <script>
-import axios from 'axios'
-  export default {
-    data() {
-      return {
-        model: {
-          email: '',
-          password: '',
-          rememberMe: false
-        }
-      };
-    },
-    methods: {
-      onSubmit() {
+import axios from "axios";
+import { Modal } from "@/components";
+import loader from "../../components/Loader.vue";
+
+export default {
+  components: {
+    Modal,
+    loader
+  },
+  data() {
+    return {
+      model: {
+        email: "",
+        password: ""
+      },
+      modals: {
+        modal0: false,
+        error: ""
+      },
+      loader: false
+    };
+  },
+  methods: {
+    onSubmit() {
+      this.loader = true;
       axios({
-      method: 'post',
-      url: `https://truckmanagment.herokuapp.com/api/auth/signin`,
-      data: { ...this.model },
-    }).then((result) => {
-      console.log(result);
-      localStorage.setItem('truck-user-token',result.data.token)
-      this.$router.push({ path: 'dashboard' })
-    }).catch(err=>{});
-        // this will be called only after form is valid. You can do api call here to login
-      }
+        method: "post",
+        url: `http://159.223.27.152/api/auth/signin`,
+        data: { ...this.model }
+      })
+        .then(result => {
+          localStorage.setItem("truck-user-token", result.data.token);
+          localStorage.setItem("truck-user-type", result.data.type);
+          this.$store.state.userType = result.data.type;
+          this.$router.push({ path: "dashboard" });
+          axios
+            .get(
+              `http://159.223.27.152/api/static/cities`,
+
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem(
+                    "truck-user-token"
+                  )}`
+                }
+              }
+            )
+            .then(response => {
+              this.$store.state.cities = response.data.cities;
+            })
+            .catch(err => {
+              console.log(err);
+              // this.modals.error = err.response.data.message;
+              // this.modals.modal0 = true;
+            });
+          axios
+            .get(
+              `http://159.223.27.152/api/static/cars`,
+
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem(
+                    "truck-user-token"
+                  )}`
+                }
+              }
+            )
+            .then(response => {
+              this.$store.state.types = response.data.types;
+            })
+            .catch(err => {
+              console.log(err);
+              // this.modals.error = err.response.data.message;
+              // this.modals.modal0 = true;
+            });
+        })
+        .catch(err => {
+          this.modals.error = err.response.data.message;
+          this.modals.modal0 = true;
+          this.loader = false;
+        });
+
+      // this will be called only after form is valid. You can do api call here to login
     }
-  };
+  }
+};
 </script>

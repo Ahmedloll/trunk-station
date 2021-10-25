@@ -19,4 +19,27 @@ const router = new VueRouter({
   }
 });
 
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title ? `${to.meta.title} || Truck Station` : "Truck Station";
+  const isAuthenticated = localStorage.getItem("truck-user-token");
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      next("/login");
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+  if (to.matched.some((record) => record.meta.requirestoBelogedOut)) {
+    if (isAuthenticated) {
+      next("/dashboard");
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+
 export default router;

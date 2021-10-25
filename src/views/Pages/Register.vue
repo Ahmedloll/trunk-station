@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="header bg-gradient-success py-7 py-lg-8 pt-lg-9">
+    <div class="header bg-gradient-success py-9 py-lg-8 pt-lg-9">
       <!-- <b-container class="container">
         <div class="header-body text-center mb-7">
           <b-row class="justify-content-center">
@@ -13,7 +13,7 @@
           </b-row>
         </div>
       </b-container> -->
-      <div class="separator separator-bottom separator-skew zindex-100">
+      <!-- <div class="separator separator-bottom separator-skew zindex-100">
         <svg
           x="0"
           y="0"
@@ -27,7 +27,7 @@
             points="2560 0 2560 100 0 100"
           ></polygon>
         </svg>
-      </div>
+      </div> -->
     </div>
     <!-- Page content -->
     <b-container class="mt--8 pb-5">
@@ -60,27 +60,61 @@
                 <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
                   <b-row>
                     <b-col md="12">
+                      <div class="radio-wrapper">
+                        <input
+                          type="radio"
+                          required
+                          id="sender"
+                          value="sender"
+                          name="type"
+                          v-model="model.type"
+                        />
+                        <label for="sender">
+                          <img src="../../assets/avatar.png" />
+                          <div>Sender</div>
+                        </label>
+                      </div>
+                      <div class="radio-wrapper">
+                        <input
+                          type="radio"
+                          required
+                          id="transporter"
+                          value="transporter"
+                          name="type"
+                          v-model="model.type"
+                        />
+                        <label for="transporter">
+                          <img src="../../assets/avatar.png" />
+                          <div>Transporter</div>
+                        </label>
+                      </div>
+                    </b-col>
+                    <!-- <b-col md="12">
                       <b-form-group>
                         <b-form-radio
-                          class="custom-control-inline"
-                          name="some-radios"
-                          value="a"
+                          class="custom-control-inline radio-wrapper"
+                          name="user-type"
+                          value="sender"
                           v-model="model.type"
+                          required
+                          :rules="{ required: true }"
                         >
                           <img src="../../assets/avatar.png" alt="user icon" />
-                          Sender/Reciver</b-form-radio
-                        >
+                          <div>Sender</div>
+                        </b-form-radio>
                         <b-form-radio
                           class="custom-control-inline"
-                          name="some-radios"
-                          value="b"
+                          name="user-type"
+                          value="transporter"
                           v-model="model.type"
+                          required
+                          :rules="{ required: true }"
                         >
                           <img src="../../assets/truck.png" alt="user icon" />
                           Transporter</b-form-radio
                         >
                       </b-form-group>
-                    </b-col>
+                    </b-col> -->
                     <b-col md="12">
                       <base-input
                         alternative
@@ -135,13 +169,13 @@
                       >
                       </base-input>
                     </b-col>
-                    <b-col md="3">
+                    <b-col md="4">
                       <base-input
                         alternative
                         class="mb-3"
                         prepend-icon="ni ni-mobile-button"
                         placeholder="Key"
-                        type="number"
+                        type="tel"
                         name="key"
                         :rules="{
                           required: true,
@@ -151,7 +185,7 @@
                       >
                       </base-input>
                     </b-col>
-                    <b-col md="9">
+                    <b-col md="8">
                       <base-input
                         alternative
                         class="mb-3"
@@ -192,56 +226,115 @@
         </b-col>
       </b-row>
     </b-container>
+    <modal :show.sync="modals.modal0">
+      <template slot="header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+      </template>
+      <div>
+        {{ modals.error }}
+      </div>
+      <template slot="footer">
+        <base-button type="secondary" @click="modals.modal0 = false"
+          >Close</base-button
+        >
+      </template>
+    </modal>
+    <loader v-if="loader" />
   </div>
 </template>
 <script>
-import axios from 'axios'
+import axios from "axios";
+import { Modal } from "@/components";
+import loader from "../../components/Loader.vue";
 
 export default {
   name: "register",
+  components: {
+    Modal,
+    loader
+  },
   data() {
     return {
       model: {
-        type:'transportar',
+        type: "",
         name: "",
         email: "",
         password: "",
         confirm_Password: "",
-        key: "",
+        key: "966",
         phone: ""
-      }
+      },
+      modals: {
+        modal0: false,
+        error: ""
+      },
+      loader: false
     };
   },
   methods: {
     onSubmit() {
       // this will be called only after form is valid. You can do an api call here to register users
-      console.log("submited");
+      this.loader = true;
 
-     let data={
-       name:this.model.name,
-       email:this.model.email,
-       password:this.model.password,
-       phone:this.model.key + this.model.phone,
-       type:this.model.type
-  
-    }
+      let data = {
+        name: this.model.name,
+        email: this.model.email,
+        password: this.model.password,
+        phone: this.model.key + this.model.phone,
+        type: this.model.type
+      };
 
-       axios({
-      method: 'post',
-      url: `https://truckmanagment.herokuapp.com/api/auth/signup`,
-      data: data,
-    }).then((result) => {
-      console.log(result);
-      this.$router.push({ path: 'login' })
-    }).catch(err=>{});
-        // this will be called only after form is valid. You can do api call here to login
-      
+      axios({
+        method: "post",
+        url: `http://159.223.27.152/api/auth/signup`,
+        data: data
+      })
+        .then(result => {
+          console.log(result);
+          this.$router.push({ path: "login" });
+        })
+        .catch(err => {
+          this.modals.error = err.response.data.err;
+          this.modals.modal0 = true;
+          this.loader = false;
+        });
+      // this will be called only after form is valid. You can do api call here to login
     }
   }
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .custom-control-inline img {
   width: 30px;
+}
+.radio-wrapper {
+  display: inline-block;
+  input[type="radio"] {
+    opacity: 0;
+    + label {
+      width: 140px;
+      margin-top: 10px;
+      display: inline-block;
+      padding: 20px 10px;
+      text-align: center;
+      transition: all 0.15s ease-in-out;
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-size: 12px;
+      cursor: pointer;
+      img {
+        width: 64px;
+      }
+    }
+    &:checked + label {
+      box-shadow: inset 0 0 0 4px #1597ff,
+        0 15px 15px -10px rgba(darken(#1597ff, 10%), 0.375);
+    }
+    &:not(:checked) + label {
+      &:first-child {
+        box-shadow: inset 0 0 0 0px #1597ff, 0 10px 15px -20px rgba(#1597ff, 0);
+      }
+    }
+  }
 }
 </style>

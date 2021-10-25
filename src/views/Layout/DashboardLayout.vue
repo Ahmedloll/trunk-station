@@ -22,6 +22,7 @@
         </sidebar-item>
 
         <sidebar-item
+          v-if="$store.state.userType == 'transporter'"
           :link="{
             name: 'Trucks',
             path: '/trucks',
@@ -31,6 +32,7 @@
         </sidebar-item>
 
         <sidebar-item
+          v-if="$store.state.userType == 'transporter'"
           :link="{
             name: 'Drivers',
             path: '/drivers',
@@ -38,17 +40,58 @@
           }"
         >
         </sidebar-item>
-
         <sidebar-item
+          v-if="$store.state.userType == 'transporter'"
+          :link="{
+            name: 'Trips',
+            path: '/trips',
+            icon: 'ni ni-map-big'
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          v-if="$store.state.userType == 'sender'"
+          :link="{
+            name: 'Create Cargo Pickup',
+            path: '/create-pickup',
+            icon: 'ni ni-map-big'
+          }"
+        >
+        </sidebar-item>
+        <base-dropdown class="nav-item" menu-on-right tag="li" title-tag="a">
+          <a
+            slot="title-container"
+            class="nav-link nav-link-icon"
+            href="#"
+            role="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="ni ni-settings-gear-65"></i> Settings
+          </a>
+          <sidebar-item
+          class="side-item"
+            :link="{
+              name: 'Reset Password',
+              path: '/resetPassword',
+              icon: 'ni ni-map-big'
+            }"
+          >
+          </sidebar-item>
+          <!-- <router-link class="dropdown-item" to="/resetPassword"
+            >Reset Password
+          </router-link> -->
+        </base-dropdown>
+        <!-- <sidebar-item
           :link="{
             name: 'Tables',
             path: '/tables',
             icon: 'ni ni-bullet-list-67 text-red'
           }"
         >
-        </sidebar-item>
+        </sidebar-item> -->
 
-        <sidebar-item
+        <!-- <sidebar-item
           :link="{
             name: 'Login',
             path: '/login',
@@ -80,10 +123,10 @@
             icon: 'ni ni-pin-3 text-orange'
           }"
         >
-        </sidebar-item>
+        </sidebar-item> -->
       </template>
 
-      <template slot="links-after">
+      <!-- <template slot="links-after">
         <hr class="my-3" />
         <h6 class="navbar-heading p-0 text-muted">شش</h6>
 
@@ -107,7 +150,7 @@
             <b-nav-text class="p-0">Components</b-nav-text>
           </b-nav-item>
         </b-nav>
-      </template>
+      </template> -->
     </side-bar>
     <div class="main-content">
       <dashboard-navbar :type="$route.meta.navbarType"></dashboard-navbar>
@@ -167,4 +210,7 @@ export default {
   }
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss" >
+
+
+</style>

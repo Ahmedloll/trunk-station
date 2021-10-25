@@ -61,52 +61,84 @@
     <b-container fluid class="mt--7">
       <b-row>
         <b-col>
-          <light-table/>
+          <drivers-table @deleteDriver="deleteDriver" :drivers="drivers" />
         </b-col>
       </b-row>
       <div class="mt-5"></div>
       <!-- <dark-table></dark-table> -->
     </b-container>
+    <loader v-if="loader" />
   </div>
 </template>
 <script>
-  import { Dropdown, DropdownItem, DropdownMenu, Table, TableColumn } from 'element-ui';
-  import projects from './Tables/projects'
-  import users from './Tables/users'
-  import LightTable from "./Tables/RegularTables/LightTable";
-  import DarkTable from "./Tables/RegularTables/DarkTable";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  Table,
+  TableColumn
+} from "element-ui";
+import users from "./Tables/users";
+import DriversTable from "./Tables/RegularTables/DriversTable";
+import DarkTable from "./Tables/RegularTables/DarkTable";
+import axios from "axios";
+import loader from "../components/Loader.vue";
 
-  export default {
-    components: {
-      LightTable,
-      DarkTable,
-      [Dropdown.name]: Dropdown,
-      [DropdownItem.name]: DropdownItem,
-      [DropdownMenu.name]: DropdownMenu,
-      [Table.name]: Table,
-      [TableColumn.name]: TableColumn
-    },
-    data() {
-      return {
-        projects,
-        users
-      };
+export default {
+  components: {
+    DriversTable,
+    DarkTable,
+    loader,
+
+    [Dropdown.name]: Dropdown,
+    [DropdownItem.name]: DropdownItem,
+    [DropdownMenu.name]: DropdownMenu,
+    [Table.name]: Table,
+    [TableColumn.name]: TableColumn
+  },
+  data() {
+    return {
+      drivers: [],
+      users,
+      loader: true
+    };
+  },
+  methods: {
+    deleteDriver(driver) {
+      this.drivers = this.drivers.filter(function(el) {
+        return el.id != driver.id;
+      });
     }
-  };
+  },
+  mounted() {
+    //****************************** getting drivers ******************************
+
+    axios
+      .get(`http://159.223.27.152/api/driver/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
+        }
+      })
+      .then(response => {
+        this.drivers = response.data.data;
+        this.loader = false;
+      });
+  }
+};
 </script>
 <style>
-.el-table.table-dark{
+.el-table.table-dark {
   background-color: #172b4d;
   color: #f8f9fe;
 }
 
 .el-table.table-dark th,
-.el-table.table-dark tr{
+.el-table.table-dark tr {
   background-color: #172b4d;
 }
 
 .el-table.table-dark td,
-.el-table.table-dark th.is-leaf{
+.el-table.table-dark th.is-leaf {
   border-bottom: none;
 }
 </style>
