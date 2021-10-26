@@ -116,14 +116,14 @@
         >
         </sidebar-item>
 -->
-        <sidebar-item
+        <!-- <sidebar-item
           :link="{
             name: 'Maps',
             path: '/maps',
             icon: 'ni ni-pin-3 text-orange'
           }"
         >
-        </sidebar-item>
+        </sidebar-item> -->
       </template>
 
       <!-- <template slot="links-after">

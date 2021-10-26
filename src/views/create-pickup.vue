@@ -142,7 +142,7 @@
                         label="No Of Truck Quantity"
                         placeholder="No Of Truck Quantity"
                         required
-                        v-model="text"
+                        v-model="text2"
                       >
                       </base-input>
                     </b-col>
@@ -152,13 +152,13 @@
                         class="mb-3"
                         prepend-icon=""
                         label="Description"
-                        v-model="text"
+                        v-model="text3"
                       >
                         <textarea
                           class="form-control form-control-alternative"
                           rows="3"
                           placeholder="Description"
-                          v-model="text"
+                          v-model="text3"
                           id="Description"
                           required
                         ></textarea>
@@ -166,7 +166,7 @@
                     </b-col>
                   </b-row>
                 </tab-content>
-                <tab-content title="Location">
+                <tab-content title="Pickup location">
                   <b-row>
                     <b-col cols="12">
                       <base-input
@@ -186,8 +186,18 @@
                       </base-input>
                     </b-col>
                     <b-col cols="12">
-                      
+                      <GMap
+                        @gotlocation="gotlocation"
+                        @gotplace="gotplace"
+                        :center="center"
+                        :zoom="12"
+                        style="width: 100%; height: 400px"
+                      ></GMap>
                     </b-col>
+                  </b-row>
+                </tab-content>
+                <tab-content title="Drop off location">
+                  <b-row>
                     <b-col cols="12">
                       <base-input
                         prepend-icon=""
@@ -203,6 +213,15 @@
                           required
                         ></b-form-select>
                       </base-input>
+                    </b-col>
+                    <b-col cols="12">
+                      <GMap
+                        @gotlocation="gotlocation"
+                        @gotplace="gotplace"
+                        :center="center"
+                        :zoom="12"
+                        style="width: 100%; height: 400px"
+                      ></GMap>
                     </b-col>
                   </b-row>
                 </tab-content>
@@ -259,25 +278,38 @@
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 // import axios from "axios";
+import GMap from "./GMap.vue";
 
 export default {
   components: {
-    flatPicker
+    flatPicker,
+    GMap
   },
   data() {
     return {
+      center: { lat: 24.694061084357084, lng: 46.67799070650271 },
+      newCoordinates: null,
       types: ["Ton", "KG"],
       date: "",
       time: "",
       text: "",
+      text1: "",
+      text2: "",
       radio: ""
     };
   },
   methods: {
     nextStep(index) {
       console.log(index);
+    },
+    gotplace(place) {
+      console.log(place);
+      this.newAddress = place;
+    },
+    gotlocation(location) {
+      console.log(location);
+      this.newCoordinates = location;
     }
-
     // onSubmit() {
     //   axios
     //     .post(`https://truckstation.info/api/truck/`, this.truck, {
