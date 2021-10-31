@@ -69,7 +69,7 @@
           this.$emit("gotlocation", this.marker);
 
           this.places = this.currentPlace;
-          this.$emit("gotplace", this.place);
+          // this.$emit("gotplace", this.place);
           this.center = marker;
         }
       },
@@ -87,15 +87,15 @@
           };
           this.$emit("gotlocation", this.marker);
 
-          const geocoder = new this.google.maps.Geocoder();
-          geocoder.geocode({ latLng: this.marker.position }, (result, status) => {
-            if (status === this.google.maps.GeocoderStatus.OK) {
-              // set the input field value with address:
-              document.querySelector(".pac-target-input").value =
-                result[0].formatted_address;
-              this.$emit("gotplace", result[0].formatted_address);
-            }
-          });
+          // const geocoder = new this.google.maps.Geocoder();
+          // geocoder.geocode({ latLng: this.marker.position }, (result, status) => {
+          //   if (status === this.google.maps.GeocoderStatus.OK) {
+          //     set the input field value with address:
+          //     document.querySelector(".pac-target-input").value =
+          //       result[0].formatted_address;
+          //     this.$emit("gotplace", result[0].formatted_address);
+          //   }
+          // });
         });
       },
       updateCoordinates(location) {
@@ -104,15 +104,15 @@
           lng: location.latLng.lng(),
         };
         this.$emit("gotlocation", { position: x });
-        const geocoder = new this.google.maps.Geocoder();
-        geocoder.geocode({ latLng: x }, (result, status) => {
-          if (status === this.google.maps.GeocoderStatus.OK) {
-            // set the input field value with address:
-            document.querySelector(".pac-target-input").value =
-              result[0].formatted_address;
-            this.$emit("gotplace", result[0].formatted_address);
-          }
-        });
+        // const geocoder = new this.google.maps.Geocoder();
+        // geocoder.geocode({ latLng: x }, (result, status) => {
+        //   if (status === this.google.maps.GeocoderStatus.OK) {
+        //     set the input field value with address:
+        //     document.querySelector(".pac-target-input").value =
+        //       result[0].formatted_address;
+        //     this.$emit("gotplace", result[0].formatted_address);
+        //   }
+        // });
       },
     },
   };

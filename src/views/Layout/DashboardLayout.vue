@@ -58,6 +58,36 @@
           }"
         >
         </sidebar-item>
+        <base-dropdown
+          v-if="$store.state.userType == 'sender'"
+          class="nav-item"
+          menu-on-right
+          tag="li"
+          title-tag="a"
+        >
+          <a
+            slot="title-container"
+            class="nav-link nav-link-icon"
+            href="#"
+            role="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="ni ni-delivery-fast"></i> Cargo pickup requests
+          </a>
+          <sidebar-item
+            class="side-item"
+            :link="{
+              name: 'Cargo pickup requests',
+              path: '/pickup-requests',
+              icon: 'ni ni-map-big'
+            }"
+          >
+          </sidebar-item>
+          <!-- <router-link class="dropdown-item" to="/resetPassword"
+            >Reset Password
+          </router-link> -->
+        </base-dropdown>
         <base-dropdown class="nav-item" menu-on-right tag="li" title-tag="a">
           <a
             slot="title-container"

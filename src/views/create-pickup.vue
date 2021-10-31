@@ -115,7 +115,7 @@
                         label="Quantity"
                         placeholder="Quantity"
                         required
-                        v-model="text"
+                        v-model="quantity"
                       >
                       </base-input>
                     </b-col>
@@ -129,6 +129,7 @@
                       >
                         <b-form-select
                           :options="types"
+                          v-model="type"
                           required
                         ></b-form-select>
                       </base-input>
@@ -142,7 +143,7 @@
                         label="No Of Truck Quantity"
                         placeholder="No Of Truck Quantity"
                         required
-                        v-model="text2"
+                        v-model="nOftruckQuantity"
                       >
                       </base-input>
                     </b-col>
@@ -152,13 +153,13 @@
                         class="mb-3"
                         prepend-icon=""
                         label="Description"
-                        v-model="text3"
+                        v-model="description"
                       >
                         <textarea
                           class="form-control form-control-alternative"
                           rows="3"
                           placeholder="Description"
-                          v-model="text3"
+                          v-model="description"
                           id="Description"
                           required
                         ></textarea>
@@ -181,14 +182,14 @@
                           :options="$store.state.cities"
                           value-field="id"
                           text-field="name"
+                          v-model="from"
                           required
                         ></b-form-select>
                       </base-input>
                     </b-col>
                     <b-col cols="12">
                       <GMap
-                        @gotlocation="gotlocation"
-                        @gotplace="gotplace"
+                        @gotlocation="gotPickupLocation"
                         :center="center"
                         :zoom="12"
                         style="width: 100%; height: 400px"
@@ -210,14 +211,14 @@
                           :options="$store.state.cities"
                           value-field="id"
                           text-field="name"
+                          v-model="to"
                           required
                         ></b-form-select>
                       </base-input>
                     </b-col>
                     <b-col cols="12">
                       <GMap
-                        @gotlocation="gotlocation"
-                        @gotplace="gotplace"
+                        @gotlocation="gotDropdownLocation"
                         :center="center"
                         :zoom="12"
                         style="width: 100%; height: 400px"
@@ -226,18 +227,41 @@
                   </b-row>
                 </tab-content>
                 <tab-content title="Transporter">
-                  Yuhuuu! This seems pretty damn simple
+                  <b-row>
+                    <b-col cols="12">
+                      <choose-trips-table
+                        @selectTrip="selectTrip"
+                        :trips="trips"
+                      />
+                    </b-col>
+                  </b-row>
                 </tab-content>
                 <tab-content title="Reciver">
-                  Yuhuuu! This seems pretty damn simple
+                  <b-col cols="12">
+                    <base-input
+                      prepend-icon=""
+                      label="User"
+                      alternative
+                      placeholder="User"
+                      class="mb-3"
+                    >
+                      <b-form-select
+                        :options="users"
+                        value-field="id"
+                        text-field="name"
+                        v-model="user"
+                        required
+                      ></b-form-select>
+                    </base-input>
+                  </b-col>
                 </tab-content>
-                <tab-content title="Review">
+                <!-- <tab-content title="Review">
                   Yuhuuu! This seems pretty damn simple
-                </tab-content>
+                </tab-content> -->
                 <template slot="footer" slot-scope="props">
                   <div class="wizard-footer-left">
                     <wizard-button
-                      v-if="props.activeTabIndex > 0 && !props.isLastStep"
+                      v-if="props.activeTabIndex > 0"
                       @click.native="props.prevTab()"
                       :style="props.fillButtonStyle"
                       >{{ $t("Back") }}</wizard-button
@@ -245,24 +269,61 @@
                   </div>
                   <div class="wizard-footer-right">
                     <wizard-button
-                      v-if="!props.isLastStep"
+                      v-if="props.activeTabIndex == 0"
                       @click.native="
-                        props.nextTab();
-                        nextStep(props.activeTabIndex);
+                        step1Verfication ? props.nextTab() : handleError(0)
                       "
                       class="wizard-footer-right"
                       :style="props.fillButtonStyle"
                       >{{ $t("Next") }}</wizard-button
                     >
-
+                    <wizard-button
+                      v-else-if="props.activeTabIndex == 1"
+                      @click.native="
+                        step2Verfication ? props.nextTab() : handleError(1)
+                      "
+                      class="wizard-footer-right"
+                      :style="props.fillButtonStyle"
+                      >{{ $t("Next") }}</wizard-button
+                    >
+                    <wizard-button
+                      v-else-if="props.activeTabIndex == 2"
+                      @click.native="
+                        if (step3Verfication) {
+                          props.nextTab();
+                          nextStep(props.activeTabIndex);
+                        } else {
+                          handleError(2);
+                        }
+                      "
+                      class="wizard-footer-right"
+                      :style="props.fillButtonStyle"
+                      >{{ $t("Next") }}</wizard-button
+                    >
+                    <wizard-button
+                      v-else-if="props.activeTabIndex == 3"
+                      @click.native="trip ? props.nextTab() : handleError(3)"
+                      class="wizard-footer-right"
+                      :style="props.fillButtonStyle"
+                      >{{ $t("Next") }}</wizard-button
+                    >
+                    <!-- v-else-if="props.activeTabIndex == 4" -->
                     <wizard-button
                       v-else
-                      @click.native="step1()"
+                      @click.native="user ? submit() : handleError(4)"
+                      class="wizard-footer-right finish-button"
+                      :style="props.fillButtonStyle"
+                      >{{ $t("Send request") }}</wizard-button
+                    >
+
+                    <!-- <wizard-button
+                      v-else
+                      @click.native="submit()"
                       class="wizard-footer-right finish-button"
                       :style="props.fillButtonStyle"
                     >
                       {{ $t("Done") }}</wizard-button
-                    >
+                    > -->
                   </div>
                 </template>
               </form-wizard>
@@ -271,62 +332,253 @@
         </b-col>
       </b-row>
     </b-container>
+    <modal :show.sync="modals.modal0">
+      <template slot="header">
+        <h5 class="modal-title" id="exampleModalLabel">Error</h5>
+      </template>
+      <div>
+        {{ modals.error }}
+      </div>
+      <template slot="footer">
+        <base-button type="secondary" @click="modals.modal0 = false"
+          >Close</base-button
+        >
+      </template>
+    </modal>
   </div>
 </template>
 
 <script>
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-// import axios from "axios";
+import ChooseTripsTable from "./Tables/RegularTables/ChooseTripsTable.vue";
+import axios from "axios";
 import GMap from "./GMap.vue";
 
 export default {
   components: {
     flatPicker,
+    ChooseTripsTable,
     GMap
+  },
+  computed: {
+    step1Verfication() {
+      return (
+        this.date &&
+        this.time &&
+        this.radio &&
+        this.quantity &&
+        this.type &&
+        this.nOftruckQuantity &&
+        this.description
+      );
+    },
+    step2Verfication() {
+      return this.from && this.pickupLat && this.pickupLng;
+    },
+    step3Verfication() {
+      return (
+        this.to &&
+        this.dropdownLat &&
+        this.dropdownLng &&
+        this.to != this.from &&
+        (this.dropdownLat != this.pickupLat ||
+          this.dropdownLng != this.pickupLng)
+      );
+    }
+    // step4Verfication() {
+    //   return this.date;
+    // }
   },
   data() {
     return {
       center: { lat: 24.694061084357084, lng: 46.67799070650271 },
-      newCoordinates: null,
-      types: ["Ton", "KG"],
+      trips: [],
+      users: [],
       date: "",
       time: "",
-      text: "",
-      text1: "",
-      text2: "",
-      radio: ""
+      radio: "",
+      quantity: "",
+      types: ["Ton", "KG"],
+      type: "",
+      nOftruckQuantity: "",
+      description: "",
+      from: "",
+      pickupLat: "",
+      pickupLng: "",
+      to: "",
+      dropdownLat: "",
+      dropdownLng: "",
+      trip: "",
+      price: "",
+      user: "",
+      modals: {
+        modal0: false,
+        error: ""
+      }
     };
   },
   methods: {
     nextStep(index) {
-      console.log(index);
+      if (index == 2) {
+        axios
+          .post(
+            `https://truckstation.info/api/pickups/getTripsAndUsers`,
+            {
+              from: this.from,
+              to: this.to,
+              location: {
+                lat: this.pickupLat,
+                long: this.pickupLng
+              },
+              distination: {
+                lat: this.dropdownLat,
+                long: this.dropdownLng
+              },
+              truckType: this.radio
+            },
+
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem(
+                  "truck-user-token"
+                )}`
+              }
+            }
+          )
+          .then(response => {
+            console.log(response);
+            this.trips = response.data.trips;
+            this.users = response.data.users;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     },
-    gotplace(place) {
-      console.log(place);
-      this.newAddress = place;
+
+    gotPickupLocation(location) {
+      this.pickupLat = location.position.lat;
+      console.log(this.pickupLat);
+      this.pickupLng = location.position.lng;
+      console.log(this.pickupLng);
     },
-    gotlocation(location) {
-      console.log(location);
-      this.newCoordinates = location;
+    gotDropdownLocation(location) {
+      this.dropdownLat = location.position.lat;
+      console.log(this.dropdownLat);
+      this.dropdownLng = location.position.lng;
+      console.log(this.dropdownLng);
+    },
+    selectTrip(id, price) {
+      this.trip = id;
+      this.price = price;
+    },
+    handleError(step) {
+      switch (step) {
+        case 0:
+          if (!this.date) {
+            this.modals.error = "You have to enter pickup date";
+          } else if (!this.time) {
+            this.modals.error = "You have to enter pickup time";
+          } else if (!this.radio) {
+            this.modals.error = "You have to choose truck type";
+          } else if (!this.quantity) {
+            this.modals.error = "You have to enter quantity";
+          } else if (!this.type) {
+            this.modals.error = "You have to enter quantity type";
+          } else if (!this.nOftruckQuantity) {
+            this.modals.error = "You have to enter no of truck quantity";
+          } else if (!this.description) {
+            this.modals.error = "You have to enter description";
+          }
+          this.modals.modal0 = true;
+          break;
+        case 1:
+          if (!this.from) {
+            this.modals.error = "You have to choose pickup city";
+          } else if (!(this.pickupLat && this.pickupLng)) {
+            this.modals.error = "You have to enter pickup location";
+          }
+          this.modals.modal0 = true;
+          break;
+        case 2:
+          if (!this.to) {
+            this.modals.error = "You have to choose drop down city";
+          } else if (!(this.dropdownLat && this.dropdownLng)) {
+            this.modals.error = "You have to enter drop down location";
+          } else if (this.to == this.from) {
+            this.modals.error =
+              "Drop down city cannot be the same as pick up city";
+          } else if (
+            !(
+              this.dropdownLat != this.pickupLat ||
+              this.dropdownLng != this.pickupLng
+            )
+          ) {
+            this.modals.error =
+              "Drop down location cannot be the same as pick up location";
+          }
+          this.modals.modal0 = true;
+          break;
+        case 3:
+          if (!this.trip) {
+            this.modals.error = "You have to choose trip";
+          }
+          this.modals.modal0 = true;
+          break;
+        case 4:
+          if (!this.user) {
+            this.modals.error = "You have to choose user";
+          }
+          this.modals.modal0 = true;
+          break;
+        default:
+        // code block
+      }
+    },
+    submit() {
+      axios
+        .post(
+          `https://truckstation.info/api/pickups/`,
+          {
+            pickupDate: this.date,
+            pickupTime: this.time,
+            quantity: this.quantity,
+            unit: this.type,
+            numberOfTruck: this.nOftruckQuantity,
+            description: this.description,
+            reciver: this.user,
+            transporter: this.trip,
+            price: this.price,
+            from: this.from,
+            to: this.to,
+            location: {
+              lat: this.pickupLat,
+              long: this.pickupLng
+            },
+            distination: {
+              lat: this.dropdownLat,
+              long: this.dropdownLng
+            },
+            truckType: this.radio
+          },
+
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem(
+                "truck-user-token"
+              )}`
+            }
+          }
+        )
+        .then(response => {
+          console.log(response);
+          this.$router.push({ path: "pickup-requests" });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
-    // onSubmit() {
-    //   axios
-    //     .post(`https://truckstation.info/api/truck/`, this.truck, {
-    //       headers: {
-    //         Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
-    //       }
-    //     })
-    //     .then(response => {
-    //       console.log(response);
-    //       this.$router.push({ path: "trucks" });
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //       // this.modals.error = err.response.data.message;
-    //       // this.modals.modal0 = true;
-    //     });
-    // }
   }
 };
 </script>

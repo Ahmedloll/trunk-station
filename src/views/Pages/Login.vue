@@ -109,7 +109,7 @@
     </b-container>
     <modal :show.sync="modals.modal0">
       <template slot="header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Error</h5>
       </template>
       <div>
         {{ modals.error }}

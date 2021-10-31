@@ -168,6 +168,16 @@ const routes = [
           import(/* webpackChunkName: "demo" */ "../views/create-pickup.vue")
       },
       {
+        path: "/pickup-requests",
+        name: "pickup-requests",
+        meta: {
+          requiresAuth: true
+        },
+
+        component: () =>
+          import(/* webpackChunkName: "demo" */ "../views/PickupRequests.vue")
+      },
+      {
         path: "/notifications",
         name: "Notifications",
         meta: {
