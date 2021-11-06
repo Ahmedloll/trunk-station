@@ -106,13 +106,45 @@
             >
             </base-input>
           </b-col>
-          <b-col cols="12">
+          <b-col cols="6" class="mt-1">
+            <label class="form-control-label">Agreement</label>
+            <!-- {{ $store.state.docs.agreement }} -->
             <vue-dropzone
+              v-if="!$store.state.user.docs.agreement[0]"
               ref="myVueDropzone"
               id="dropzone"
-              :options="dropzoneOptions"
-              v-model="file"
+              :options="dropzoneAgreementOptions"
             ></vue-dropzone>
+            <div v-else>
+              <a
+                v-for="(doc, i) in $store.state.user.docs.agreement"
+                :key="doc.id"
+                :href="doc.link"
+                target="_blank"
+                class="file-link"
+                >{{ `agreement ${i + 1}` }}</a
+              >
+            </div>
+          </b-col>
+          <b-col cols="6" class="mt-1">
+            <label class="form-control-label">CR</label>
+            <!-- {{ $store.state.docs.CR }} -->
+            <vue-dropzone
+              v-if="!$store.state.user.docs.CR[0]"
+              ref="myVueDropzone"
+              id="dropzone2"
+              :options="dropzoneCROptions"
+            ></vue-dropzone>
+            <div v-else>
+              <a
+                v-for="(doc, i) in $store.state.user.docs.CR"
+                :key="doc.id"
+                :href="doc.link"
+                target="_blank"
+                class="file-link"
+                >{{ `CR ${i + 1}` }}</a
+              >
+            </div>
           </b-col>
         </b-row>
       </div>
@@ -128,17 +160,30 @@
 <script>
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import axios from "axios";
 export default {
   components: {
     vueDropzone: vue2Dropzone
   },
   data() {
     return {
-      dropzoneOptions: {
-        url: "https://httpbin.org/post",
+      dropzoneAgreementOptions: {
+        url: "https://truckstation.info/api/transporter/upload",
+        paramName: "agreement",
+        thumbnailWidth: 90,
+        maxFilesize: 2,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
+        }
+      },
+      dropzoneCROptions: {
+        url: "https://truckstation.info/api/transporter/upload",
+        paramName: "CR",
         thumbnailWidth: 150,
-        maxFilesize: 0.5,
-        headers: { "My-Awesome-Header": "header value" }
+        maxFilesize: 2,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
+        }
       },
       file: [],
       user: {
@@ -153,25 +198,46 @@ export default {
         postalCode: "",
         aboutMe: ""
       }
-      // user: {
-      //   company: "Creative Code Inc.",
-      //   username: "michael23",
-      //   email: "",
-      //   firstName: "Mike",
-      //   lastName: "Andrew",
-      //   address: "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09",
-      //   city: "New York",
-      //   country: "USA",
-      //   postalCode: "",
-      //   aboutMe: `Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.`
-      // }
     };
   },
   methods: {
     updateProfile() {
       alert("Your data: " + JSON.stringify(this.user));
     }
+  },
+  mounted() {
+    axios
+      .get(`https://truckstation.info/api/transporter/upload`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
+        }
+      })
+      .then(response => {
+        console.log(response);
+        localStorage.setItem(
+          "truck-user-docs",
+          JSON.stringify(response.data.files)
+        );
+        this.$store.state.docs = response.data.files;
+      });
   }
 };
 </script>
-<style></style>
+<style>
+.dropzone {
+  padding: 10px;
+}
+.vue-dropzone > .dz-preview .dz-image {
+  height: 90px;
+}
+.file-link {
+  padding: 5px;
+  background-color: #5e72e4;
+  color: white;
+  margin: 5px;
+  display: inline-block;
+  border-radius: 10px;
+  min-height: 35px;
+  text-align: center;
+}
+</style>

@@ -158,6 +158,24 @@ export default {
           localStorage.setItem("truck-user-token", result.data.token);
           localStorage.setItem("truck-user-type", result.data.type);
           this.$store.state.userType = result.data.type;
+          localStorage.setItem(
+            "truck-user",
+            JSON.stringify({
+              name: result.data.name,
+              email: result.data.email,
+              docs: result.data.docs,
+              img:
+                "https://pbs.twimg.com/profile_images/1389705406683942914/Qv3ml2Rt_400x400.jpg"
+            })
+          );
+          this.$store.state.user = {
+            name: result.data.name,
+            email: result.data.email,
+            docs: result.data.docs,
+            img:
+              "https://pbs.twimg.com/profile_images/1389705406683942914/Qv3ml2Rt_400x400.jpg"
+          };
+
           this.$router.push({ path: "dashboard" });
           axios
             .get(

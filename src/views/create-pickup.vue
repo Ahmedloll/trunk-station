@@ -46,16 +46,12 @@
                         label="Pickup date"
                         required
                       >
-                        <flat-picker
-                          slot-scope="{ focus, blur }"
-                          @on-open="focus"
-                          @on-close="blur"
+                        <flat-pickr
                           :config="{ allowInput: true }"
                           required
                           class="form-control datepicker"
                           v-model="date"
-                        >
-                        </flat-picker>
+                        ></flat-pickr>
                       </base-input>
                     </b-col>
                     <b-col md="6">
@@ -65,10 +61,7 @@
                         label="Pickup time"
                         required
                       >
-                        <flat-picker
-                          slot-scope="{ focus, blur }"
-                          @on-open="focus"
-                          @on-close="blur"
+                        <flat-pickr
                           :config="{
                             allowInput: true,
                             enableTime: true,
@@ -79,7 +72,7 @@
                           class="form-control datepicker"
                           v-model="time"
                         >
-                        </flat-picker>
+                        </flat-pickr>
                       </base-input>
                     </b-col>
                     <b-col cols="12">
@@ -96,7 +89,7 @@
                           type="radio"
                           required
                           :id="`${type.id}`"
-                          :value="`${type.id}`"
+                          :value="type"
                           name="type"
                           v-model="radio"
                         />
@@ -255,9 +248,49 @@
                     </base-input>
                   </b-col>
                 </tab-content>
-                <!-- <tab-content title="Review">
-                  Yuhuuu! This seems pretty damn simple
-                </tab-content> -->
+                <tab-content title="Review">
+                  <b-row>
+                    <b-col cols="6">
+                      <span class="title">Pick up date:</span> {{ date }}</b-col
+                    >
+                    <b-col cols="6"
+                      ><span class="title">Pick up time:</span>
+                      {{ time }}</b-col
+                    >
+                    <b-col cols="6"
+                      ><span class="title">Truck type:</span>
+                      {{ radio.name }}</b-col
+                    >
+                    <b-col cols="6"
+                      ><span class="title">Quantity:</span>
+                      {{ `${quantity} ${type}` }}</b-col
+                    >
+                    <b-col cols="12"
+                      ><span class="title">No of truck quantity:</span>
+                      {{ nOftruckQuantity }}</b-col
+                    >
+                    <b-col cols="12"
+                      ><span class="title">Description:</span>
+                      {{ description }}</b-col
+                    >
+                    <b-col cols="6"
+                      ><span class="title">From:</span>
+                      {{ fromCity }}
+                    </b-col>
+                    <b-col cols="6"
+                      ><span class="title">To:</span>
+                      {{ toCity }}
+                    </b-col>
+                    <b-col cols="6"
+                      ><span class="title">Transporter:</span>
+                      {{ transporter }}
+                    </b-col>
+                    <b-col cols="6"
+                      ><span class="title">Reciver:</span>
+                      {{ reciver }}
+                    </b-col>
+                  </b-row>
+                </tab-content>
                 <template slot="footer" slot-scope="props">
                   <div class="wizard-footer-left">
                     <wizard-button
@@ -307,6 +340,13 @@
                       :style="props.fillButtonStyle"
                       >{{ $t("Next") }}</wizard-button
                     >
+                    <wizard-button
+                      v-else-if="props.activeTabIndex == 4"
+                      @click.native="props.nextTab()"
+                      class="wizard-footer-right"
+                      :style="props.fillButtonStyle"
+                      >{{ $t("Next") }}</wizard-button
+                    >
                     <!-- v-else-if="props.activeTabIndex == 4" -->
                     <wizard-button
                       v-else
@@ -349,15 +389,16 @@
 </template>
 
 <script>
-import flatPicker from "vue-flatpickr-component";
+import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+
 import ChooseTripsTable from "./Tables/RegularTables/ChooseTripsTable.vue";
 import axios from "axios";
 import GMap from "./GMap.vue";
 
 export default {
   components: {
-    flatPicker,
+    flatPickr,
     ChooseTripsTable,
     GMap
   },
@@ -385,10 +426,31 @@ export default {
         (this.dropdownLat != this.pickupLat ||
           this.dropdownLng != this.pickupLng)
       );
+    },
+    fromCity() {
+      if (this.$store.state.cities && this.from) {
+        let city = this.$store.state.cities.filter(el => el.id == this.from)[0];
+        return city.name;
+      }
+    },
+    toCity() {
+      if (this.$store.state.cities && this.to) {
+        let city = this.$store.state.cities.filter(el => el.id == this.to)[0];
+        return city.name;
+      }
+    },
+    transporter() {
+      if (this.trips && this.trip) {
+        let company = this.trips.filter(el => el.companyId == this.trip)[0];
+        return company.companyName;
+      }
+    },
+    reciver() {
+      if (this.users && this.user) {
+        let user = this.users.filter(el => el.id == this.user)[0];
+        return user.name;
+      }
     }
-    // step4Verfication() {
-    //   return this.date;
-    // }
   },
   data() {
     return {
@@ -435,7 +497,7 @@ export default {
                 lat: this.dropdownLat,
                 long: this.dropdownLng
               },
-              truckType: this.radio
+              truckType: this.radio.id
             },
 
             {
@@ -560,7 +622,7 @@ export default {
               lat: this.dropdownLat,
               long: this.dropdownLng
             },
-            truckType: this.radio
+            truckType: this.radio.id
           },
 
           {
@@ -621,5 +683,11 @@ body {
       }
     }
   }
+}
+.title {
+  color: darkslategrey;
+  font-size: 18px;
+  line-height: 35px;
+  font-weight: 600;
 }
 </style>

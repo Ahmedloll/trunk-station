@@ -7,16 +7,12 @@ export default new Vuex.Store({
   state: {
     lang: "",
     userType: localStorage.getItem("truck-user-type"),
+    user: JSON.parse(localStorage.getItem("truck-user")),
 
     cities: [],
     citiesID: [],
     types: [],
-    typesID: [],
-    user: {
-      name: "Ahmed Alaa",
-      img:
-        "https://pbs.twimg.com/profile_images/1389705406683942914/Qv3ml2Rt_400x400.jpg"
-    }
+    typesID: []
   },
   mutations: {},
   actions: {},
