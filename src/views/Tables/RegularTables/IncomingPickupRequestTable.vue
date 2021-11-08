@@ -1,7 +1,7 @@
 <template>
   <b-card no-body>
     <b-card-header class="border-0 d-flex justify-content-between">
-      <h3 class="mb-0">Pickup Requests</h3>
+      <h3 class="mb-0">Incoming Pickup Request</h3>
     </b-card-header>
 
     <el-table
@@ -33,11 +33,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="reciver" min-width="180px">
+      <el-table-column label="Sender" min-width="180px">
         <template v-slot="{ row }">
           <b-media no-body class="align-items-center">
             <b-media-body>
-              <span class="mb-0 text-sm">{{ row.reciver.name }}</span>
+              <span class="mb-0 text-sm">{{ row.sender.name }}</span>
             </b-media-body>
           </b-media>
         </template>
@@ -60,9 +60,38 @@
           </b-media>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" min-width="120px" prop="actions">
+
+      <el-table-column label="Actions" min-width="250px" prop="actions">
         <template v-slot="{ row }">
           <div class="d-flex justify-content-between">
+            <button
+              v-if="row.reciverApprove != '0' && row.reciverApprove != '1'"
+              @click="approve(row)"
+              class="btn btn-sm btn-success mr-4"
+            >
+              <i class="fas fa-check"></i>
+            </button>
+            <button
+              v-if="row.reciverApprove == '1'"
+              class="btn btn-sm btn-success mr-4"
+            >
+              Approved
+              <i class="fas fa-check"></i>
+            </button>
+            <button
+              v-if="row.reciverApprove != '0' && row.reciverApprove != '1'"
+              @click="decline(row)"
+              class="btn btn-sm btn-danger mr-4"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+            <button
+              v-if="row.reciverApprove == '0'"
+              class="btn btn-sm btn-danger mr-4"
+            >
+              Declined
+              <i class="fas fa-times"></i>
+            </button>
             <button
               @click="setTrip(row)"
               class="btn btn-sm btn-info float-right"
@@ -72,20 +101,6 @@
           </div>
         </template>
       </el-table-column>
-      <!--
-      <el-table-column label="Actions" min-width="150px" prop="actions">
-        <template v-slot="{ row }">
-          <div class="d-flex justify-content-between">
-
-            <router-link
-              :to="{ name: 'trip', params: { id: row.id } }"
-              class="btn btn-sm btn-default float-right"
-            >
-              <i class="fas fa-edit"></i>
-            </router-link>
-          </div>
-        </template>
-      </el-table-column> -->
     </el-table>
     <loader v-if="loader" />
   </b-card>
@@ -96,7 +111,7 @@ import { Table, TableColumn } from "element-ui";
 import axios from "axios";
 import loader from "../../../components/Loader.vue";
 export default {
-  name: "pickup-request-table",
+  name: "incoming-pickup-request-table",
   components: {
     loader,
 
@@ -112,6 +127,52 @@ export default {
     };
   },
   methods: {
+    approve(trip) {
+      axios
+        .post(
+          `https://truckstation.info/api/pickups/approveReciver`,
+          { id: trip.id },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem(
+                "truck-user-token"
+              )}`
+            }
+          }
+        )
+        .then(response => {
+          console.log(response);
+          this.$emit("approve", trip);
+        })
+        .catch(err => {
+          console.log(err);
+          // this.modals.error = err.response.data.message;
+          // this.modals.modal0 = true;
+        });
+    },
+    decline(trip) {
+      axios
+        .post(
+          `https://truckstation.info/api/pickups/declineReciver`,
+          { id: trip.id },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem(
+                "truck-user-token"
+              )}`
+            }
+          }
+        )
+        .then(response => {
+          console.log(response);
+          this.$emit("decline", trip);
+        })
+        .catch(err => {
+          console.log(err);
+          // this.modals.error = err.response.data.message;
+          // this.modals.modal0 = true;
+        });
+    },
     setTrip(trip) {
       console.log(trip);
       this.$store.state.detail_trip = trip;

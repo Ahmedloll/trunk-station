@@ -5,7 +5,11 @@
     <b-container fluid class="mt--7">
       <b-row>
         <b-col>
-          <pickup-request-table :trips="trips" />
+          <pickup-request-table
+            :trips="trips"
+            @approve="approve"
+            @decline="decline"
+          />
         </b-col>
       </b-row>
       <div class="mt-5"></div>
@@ -22,7 +26,7 @@ import {
   TableColumn
 } from "element-ui";
 import users from "./Tables/users";
-import PickupRequestTable from "./Tables/RegularTables/PickupRequestTable";
+import PickupRequestTable from "./Tables/RegularTables/IncomingPickupRequestTable.vue";
 import DarkTable from "./Tables/RegularTables/DarkTable";
 import axios from "axios";
 import loader from "../components/Loader.vue";
@@ -46,17 +50,30 @@ export default {
     };
   },
   methods: {
-    // deleteTrip(trip) {
-    //   this.trips = this.trips.filter(function(el) {
-    //     return el.id != trip.id;
-    //   });
-    // }
+    approve(trip) {
+      this.trips = this.trips.map(el => {
+        let x = el;
+        if (el.id == trip.id) {
+          x.reciverApprove = "1";
+        }
+        return x;
+      });
+    },
+    decline(trip) {
+      this.trips = this.trips.map(el => {
+        let x = el;
+        if (el.id == trip.id) {
+          x.reciverApprove = "0";
+        }
+        return x;
+      });
+    }
   },
   mounted() {
     //****************************** getting trips ******************************
 
     axios
-      .get(`https://truckstation.info/api/pickups/`, {
+      .get(`https://truckstation.info/api/pickups/reciver`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
         }

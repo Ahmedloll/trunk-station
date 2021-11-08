@@ -84,6 +84,15 @@
             }"
           >
           </sidebar-item>
+          <sidebar-item
+            class="side-item"
+            :link="{
+              name: 'Cargo pickup incoming',
+              path: '/incoming-pickup-requests',
+              icon: 'ni ni-map-big'
+            }"
+          >
+          </sidebar-item>
           <!-- <router-link class="dropdown-item" to="/resetPassword"
             >Reset Password
           </router-link> -->

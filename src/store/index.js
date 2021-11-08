@@ -12,7 +12,8 @@ export default new Vuex.Store({
     cities: [],
     citiesID: [],
     types: [],
-    typesID: []
+    typesID: [],
+    detail_trip: {}
   },
   mutations: {},
   actions: {},
