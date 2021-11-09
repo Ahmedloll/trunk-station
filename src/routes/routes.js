@@ -158,6 +158,15 @@ const routes = [
           import(/* webpackChunkName: "demo" */ "../views/AddTrip.vue")
       },
       {
+        path: "/trnsporters-requests",
+        name: "trnsporters-requests",
+        meta: {
+          requiresAuth: true
+        },
+        component: () =>
+          import(/* webpackChunkName: "demo" */ "../views/TransportersRequests.vue")
+      },
+      {
         path: "/create-pickup",
         name: "create-pickup",
         meta: {

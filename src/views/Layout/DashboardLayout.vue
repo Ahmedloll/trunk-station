@@ -50,6 +50,15 @@
         >
         </sidebar-item>
         <sidebar-item
+          v-if="$store.state.userType == 'transporter'"
+          :link="{
+            name: 'trnsporters-requests',
+            path: '/trnsporters-requests',
+            icon: 'ni ni-map-big'
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
           v-if="$store.state.userType == 'sender'"
           :link="{
             name: 'Create Cargo Pickup',

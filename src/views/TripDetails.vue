@@ -50,10 +50,58 @@
               <b-col cols="6"
                 ><span class="title">Transporter:</span>
                 {{ $store.state.detail_trip.transporter.name }}
+                <button
+                  disabled
+                  v-if="$store.state.detail_trip.transporterAprove == '1'"
+                  class="btn btn-sm btn-success mr-4 float-none ml-3"
+                >
+                  Approved
+                  <i class="fas fa-check"></i>
+                </button>
+
+                <button
+                  disabled
+                  v-else-if="$store.state.detail_trip.transporterAprove == '0'"
+                  class="btn btn-sm btn-danger mr-4 float-none ml-3"
+                >
+                  Declined
+                  <i class="fas fa-times"></i>
+                </button>
+                <button
+                  disabled
+                  v-else
+                  class="btn btn-sm btn-info float-right float-none ml-3"
+                >
+                  Pending
+                </button>
               </b-col>
               <b-col cols="6"
                 ><span class="title">Reciver:</span>
                 {{ $store.state.detail_trip.reciver.name }}
+                <button
+                  disabled
+                  v-if="$store.state.detail_trip.reciverApprove == '1'"
+                  class="btn btn-sm btn-success mr-4 float-none ml-3"
+                >
+                  Approved
+                  <i class="fas fa-check"></i>
+                </button>
+
+                <button
+                  disabled
+                  v-else-if="$store.state.detail_trip.reciverApprove == '0'"
+                  class="btn btn-sm btn-danger mr-4 float-none ml-3"
+                >
+                  Declined
+                  <i class="fas fa-times"></i>
+                </button>
+                <button
+                  disabled
+                  v-else
+                  class="btn btn-sm btn-info float-right float-none ml-3"
+                >
+                  Pending
+                </button>
               </b-col>
             </b-row>
           </card>
