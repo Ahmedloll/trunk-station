@@ -21,7 +21,7 @@
               type="text"
               :label="$t('User Name')"
               :placeholder="$t('User Name')"
-              v-model="user.username"
+              v-model="user_info.name"
             >
             </base-input>
           </b-col>
@@ -32,7 +32,7 @@
               type="text"
               :label="$t('P.O. Box')"
               :placeholder="$t('P.O. Box')"
-              v-model="user.poBox"
+              v-model="user_info.POBox"
             >
             </base-input>
           </b-col>
@@ -41,7 +41,7 @@
               type="email"
               :label="$t('Email address')"
               :placeholder="$t('Email address')"
-              v-model="user.email"
+              v-model="user_info.email"
             >
             </base-input>
           </b-col>
@@ -58,7 +58,6 @@
                 required: true,
                 numeric: true
               }"
-              v-model="user.key"
             >
             </base-input>
           </b-col>
@@ -75,7 +74,7 @@
                 required: true,
                 numeric: true
               }"
-              v-model="user.phone"
+              v-model="user_info.phone"
             >
             </base-input>
           </b-col>
@@ -92,7 +91,7 @@
                 required: true,
                 numeric: true
               }"
-              v-model="user.phone"
+              v-model="user_info.fax"
             >
             </base-input>
           </b-col>
@@ -102,7 +101,7 @@
               type="text"
               :label="$t('Address')"
               :placeholder="$t('Address')"
-              v-model="user.address"
+              v-model="user_info.address"
             >
             </base-input>
           </b-col>
@@ -197,15 +196,48 @@ export default {
         country: "",
         postalCode: "",
         aboutMe: ""
-      }
+      },
+      user_info: {}
     };
   },
   methods: {
     updateProfile() {
-      alert("Your data: " + JSON.stringify(this.user));
+      axios
+        .post(`https://truckstation.info/api/user/`, this.user_info, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
+          }
+        })
+        .then(response => {
+          this.$store.state.user.name = response.data.data.name;
+          localStorage.setItem(
+            "truck-user",
+            JSON.stringify({
+              name: response.data.data.name,
+              email: this.$store.state.user.email,
+              docs: this.$store.state.user.docs,
+              img:
+                "https://pbs.twimg.com/profile_images/1389705406683942914/Qv3ml2Rt_400x400.jpg"
+            })
+          );
+          this.$router.push({ path: "/" });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   mounted() {
+    axios
+      .get(`https://truckstation.info/api/user/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("truck-user-token")}`
+        }
+      })
+      .then(response => {
+        this.user_info = response.data.data;
+        console.log(this.user_info);
+      });
     axios
       .get(`https://truckstation.info/api/transporter/upload`, {
         headers: {
@@ -213,7 +245,6 @@ export default {
         }
       })
       .then(response => {
-        console.log(response);
         localStorage.setItem(
           "truck-user-docs",
           JSON.stringify(response.data.files)
